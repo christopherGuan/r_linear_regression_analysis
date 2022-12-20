@@ -1,0 +1,1058 @@
+---
+title: "Linear Regression Model To Predict Car Price "
+output: html_notebook
+---
+
+# Numerical Dataset
+## Split the dataset
+```{r}
+library(caTools)
+
+#make this example reproducible
+set.seed(4)
+#num_df <- read.csv(file = '/Users/chrisguan/Documents/Regression/final_project/Num_only/num_df.csv')
+
+df <- read.csv(file = '/Users/chrisguan/Documents/Regression/final_project/cleaned_df.csv')
+
+#use 90% of dataset as training set and 10% as test set
+sample <- sample.split(df, SplitRatio = 0.9)
+train <- subset(df, sample == TRUE)
+test <- subset(df, sample == FALSE)
+```
+
+
+## Train Raw Model
+```{r}
+fm =lm(price~.,data=train)
+summary(fm)
+plot(fm)
+```
+94.17% of variance in the dependent variable (y) that can be explained by the independent variables (x).
+
+### Cleaned Full Model With Log
+```{r}
+loig_fm =lm(log(price)~.,data=train)
+summary(loig_fm)
+plot(loig_fm)
+```
+
+
+```{r}
+attach(train) 
+europe=ifelse(CarName=='europe',1,0)
+america=ifelse(CarName=="america",1,0)
+asian=ifelse(CarName=="asian",1,0)
+
+gas=ifelse(fueltype=="gas",1,0)
+diesel=ifelse(fueltype=="diesel",1,0)
+
+std=ifelse(aspiration=="std",1,0)
+turbo=ifelse(aspiration=="turbo",1,0)
+
+hatchback=ifelse(carbody=="hatchback",1,0)
+sedan=ifelse(carbody=="sedan",1,0)
+wagon=ifelse(carbody=="wagon",1,0)
+convertible=ifelse(carbody=="convertible",1,0)
+hardtop=ifelse(carbody=="hardtop",1,0)
+
+rwd=ifelse(drivewheel=="rwd",1,0)
+fwd=ifelse(drivewheel=="fwd",1,0)
+fourwd=ifelse(drivewheel=='4wd',1,0)
+
+front=ifelse(enginelocation=="front",1,0)
+rear=ifelse(enginelocation=="rear",1,0)
+
+mpfi=ifelse(fuelsystem=="mpfi",1,0)
+bbl2=ifelse(fuelsystem=='2bbl',1,0)
+mfi=ifelse(fuelsystem=="mfi",1,0)
+bbl1=ifelse(fuelsystem=='1bbl',1,0)
+spfi=ifelse(fuelsystem=="spfi",1,0)
+bbl4=ifelse(fuelsystem=='4bbl',1,0)
+idi=ifelse(fuelsystem=="idi",1,0)
+spdi=ifelse(fuelsystem=="spdi",1,0)
+
+dohc=ifelse(enginetype=="dohc",1,0)
+ohcv=ifelse(enginetype=="ohcv",1,0)
+mfi=ifelse(enginetype=="mfi",1,0)
+ohc=ifelse(enginetype=="ohc",1,0)
+l=ifelse(enginetype=="l",1,0)
+rotor=ifelse(enginetype=="rotor",1,0)
+ohcf=ifelse(enginetype=="ohcf",1,0)
+dohcv=ifelse(enginetype=="dohcv",1,0)
+
+small=ifelse(cylindernumber=="small",1,0)
+middle=ifelse(cylindernumber=="middle",1,0)
+large=ifelse(cylindernumber=="large",1,0)
+```
+
+```{r}
+test
+```
+
+```{r}
+test$europe=ifelse(test$CarName=='europe',1,0)
+test$america=ifelse(test$CarName=="america",1,0)
+test$asian=ifelse(test$CarName=="asian",1,0)
+
+test$gas=ifelse(test$fueltype=="gas",1,0)
+test$diesel=ifelse(test$fueltype=="diesel",1,0)
+
+test$std=ifelse(test$aspiration=="std",1,0)
+test$turbo=ifelse(test$aspiration=="turbo",1,0)
+
+test$hatchback=ifelse(test$carbody=="hatchback",1,0)
+test$sedan=ifelse(test$carbody=="sedan",1,0)
+test$wagon=ifelse(test$carbody=="wagon",1,0)
+test$convertible=ifelse(test$carbody=="convertible",1,0)
+test$hardtop=ifelse(test$carbody=="hardtop",1,0)
+
+test$rwd=ifelse(test$drivewheel=="rwd",1,0)
+test$fwd=ifelse(test$drivewheel=="fwd",1,0)
+test$fourwd=ifelse(test$drivewheel=='4wd',1,0)
+
+test$front=ifelse(test$enginelocation=="front",1,0)
+test$rear=ifelse(test$enginelocation=="rear",1,0)
+
+test$mpfi=ifelse(test$fuelsystem=="mpfi",1,0)
+test$bbl2=ifelse(test$fuelsystem=='2bbl',1,0)
+test$mfi=ifelse(test$fuelsystem=="mfi",1,0)
+test$bbl1=ifelse(test$fuelsystem=='1bbl',1,0)
+test$spfi=ifelse(test$fuelsystem=="spfi",1,0)
+test$bbl4=ifelse(test$fuelsystem=='4bbl',1,0)
+test$idi=ifelse(test$fuelsystem=="idi",1,0)
+test$spdi=ifelse(test$fuelsystem=="spdi",1,0)
+
+test$dohc=ifelse(test$enginetype=="dohc",1,0)
+test$ohcv=ifelse(test$enginetype=="ohcv",1,0)
+test$mfi=ifelse(test$enginetype=="mfi",1,0)
+test$ohc=ifelse(test$enginetype=="ohc",1,0)
+test$l=ifelse(test$enginetype=="l",1,0)
+test$rotor=ifelse(test$enginetype=="rotor",1,0)
+test$ohcf=ifelse(test$enginetype=="ohcf",1,0)
+test$dohcv=ifelse(test$enginetype=="dohcv",1,0)
+
+test$small=ifelse(test$cylindernumber=="small",1,0)
+test$middle=ifelse(test$cylindernumber=="middle",1,0)
+test$large=ifelse(test$cylindernumber=="large",1,0)
+```
+
+
+```{r}
+model<-lm(log(price) ~ wheelbase + carlength + carwidth + curbweight + enginesize + 
+            boreratio + stroke + compressionratio + horsepower + peakrpm + citympg + highwaympg+ 
+            europe + america + asian + gas + diesel + std + turbo +
+            hatchback + sedan + wagon + convertible + hardtop +
+            rwd + fwd + fourwd + front + rear +
+            mpfi+bbl2+mfi+bbl1+spfi+bbl4+idi+ spdi+
+            dohc+ohcv+mfi+ohc+l+rotor+ohcf+dohcv+
+            small + middle + large, data= train)
+summary(model)
+```
+
+```{r}
+model1<-lm(log(price) ~ wheelbase + carlength + carwidth + curbweight + enginesize + 
+            boreratio + stroke + compressionratio + horsepower + peakrpm + citympg + highwaympg + 
+            europe + america  + gas + std +
+            hatchback + sedan + wagon + convertible +
+            rwd + fwd + front +
+            mpfi+bbl2+bbl1+spfi+bbl4+ spdi+
+            dohc+ohcv+ohc+l+rotor+ohcf+
+            small + middle, data= train)
+summary(model1)
+```
+
+```{r}
+plot(model1)
+```
+
+
+
+## Manually Use Backward Selection Based on P-value To Find The Best Model
+#### Remove carlength
+```{r}
+model2<-lm(log(price) ~ wheelbase + carwidth + curbweight + enginesize + 
+            boreratio + stroke + compressionratio + horsepower + peakrpm + citympg + highwaympg + 
+            europe + america  + gas + std +
+            hatchback + sedan + wagon + convertible +
+            rwd + fwd + front +
+            mpfi+bbl2+bbl1+spfi+bbl4+ spdi+
+            dohc+ohcv+ohc+l+rotor+ohcf+
+            small + middle, data= train)
+summary(model2)
+```
+
+
+#### Remove mpfi
+```{r}
+model3<-lm(log(price) ~ wheelbase + carwidth + curbweight + enginesize + 
+            boreratio + stroke + compressionratio + horsepower + peakrpm + citympg + highwaympg + 
+            europe + america  + gas + std +
+            hatchback + sedan + wagon + convertible +
+            rwd + fwd + front +
+            bbl2+bbl1+spfi+bbl4+ spdi+
+            dohc+ohcv+ohc+l+rotor+ohcf+
+            small + middle, data= train)
+summary(model3)
+```
+
+
+#### Remove l
+```{r}
+model4<-lm(log(price) ~ wheelbase + carwidth + curbweight + enginesize + 
+            boreratio + stroke + compressionratio + horsepower + peakrpm + citympg + highwaympg + 
+            europe + america  + gas + std +
+            hatchback + sedan + wagon + convertible +
+            rwd + fwd + front +
+            bbl2+bbl1+spfi+bbl4+ spdi+
+            dohc+ohcv+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model4)
+```
+
+
+#### Remove bbl1
+```{r}
+model5<-lm(log(price) ~ wheelbase + carwidth + curbweight + enginesize + 
+            boreratio + stroke + compressionratio + horsepower + peakrpm + citympg + highwaympg + 
+            europe + america  + gas + std +
+            hatchback + sedan + wagon + convertible +
+            rwd + fwd + front +
+            bbl2+spfi+bbl4+ spdi+
+            dohc+ohcv+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model5)
+```
+
+
+
+#### Remove america
+```{r}
+model6<-lm(log(price) ~ wheelbase + carwidth + curbweight + enginesize + 
+            boreratio + stroke + compressionratio + horsepower + peakrpm + citympg + highwaympg + 
+            europe + gas + std +
+            hatchback + sedan + wagon + convertible +
+            rwd + fwd + front +
+            bbl2+spfi+bbl4+ spdi+
+            dohc+ohcv+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model6)
+```
+
+
+#### Remove hatchback
+```{r}
+model7<-lm(log(price) ~ wheelbase + carwidth + curbweight + enginesize + 
+            boreratio + stroke + compressionratio + horsepower + peakrpm + citympg + highwaympg + 
+            europe + gas + std +
+            sedan + wagon + convertible +
+            rwd + fwd + front +
+            bbl2+spfi+bbl4+ spdi+
+            dohc+ohcv+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model7)
+```
+
+#### Remove wagon
+```{r}
+model8<-lm(log(price) ~ wheelbase + carwidth + curbweight + enginesize + 
+            boreratio + stroke + compressionratio + horsepower + peakrpm + citympg + highwaympg + 
+            europe + gas + std +
+            sedan + convertible +
+            rwd + fwd + front +
+            bbl2+spfi+bbl4+ spdi+
+            dohc+ohcv+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model8)
+```
+
+#### Remove spfi
+```{r}
+model9<-lm(log(price) ~ wheelbase + carwidth + curbweight + enginesize + 
+            boreratio + stroke + compressionratio + horsepower + peakrpm + citympg + highwaympg + 
+            europe + gas + std +
+            sedan + convertible +
+            rwd + fwd + front +
+            bbl2+bbl4+ spdi+
+            dohc+ohcv+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model9)
+```
+
+#### Remove peakrpm
+```{r}
+model10<-lm(log(price) ~ wheelbase + carwidth + curbweight + enginesize + 
+            boreratio + stroke + compressionratio + horsepower + citympg + highwaympg + 
+            europe + gas + std +
+            sedan + convertible +
+            rwd + fwd + front +
+            bbl2+bbl4+ spdi+
+            dohc+ohcv+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model10)
+```
+
+
+#### Remove fwd
+```{r}
+model11<-lm(log(price) ~ wheelbase + carwidth + curbweight + enginesize + 
+            boreratio + stroke + compressionratio + horsepower + citympg + highwaympg + 
+            europe + gas + std +
+            sedan + convertible +
+            rwd + front +
+            bbl2+bbl4+ spdi+
+            dohc+ohcv+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model11)
+```
+
+
+#### Remove boreratio
+```{r}
+model12<-lm(log(price) ~ wheelbase + carwidth + curbweight + enginesize + 
+            stroke + compressionratio + horsepower + citympg + highwaympg + 
+            europe + gas + std +
+            sedan + convertible +
+            rwd + front +
+            bbl2+bbl4+ spdi+
+            dohc+ohcv+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model12)
+```
+
+#### Remove std
+```{r}
+model13<-lm(log(price) ~ wheelbase + carwidth + curbweight + enginesize + 
+            stroke + compressionratio + horsepower + citympg + highwaympg + 
+            europe + gas +
+            sedan + convertible +
+            rwd + front +
+            bbl2+bbl4+ spdi+
+            dohc+ohcv+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model13)
+```
+
+#### Remove highwaympg
+```{r}
+model14<-lm(log(price) ~ wheelbase + carwidth + curbweight + enginesize + 
+            stroke + compressionratio + horsepower + citympg + 
+            europe + gas +
+            sedan + convertible +
+            rwd + front +
+            bbl2+bbl4+ spdi+
+            dohc+ohcv+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model14)
+```
+
+#### Remove wheelbase
+```{r}
+model15<-lm(log(price) ~ carwidth + curbweight + enginesize + 
+            stroke + compressionratio + horsepower + citympg + 
+            europe + gas +
+            sedan + convertible +
+            rwd + front +
+            bbl2+bbl4+ spdi+
+            dohc+ohcv+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model15)
+```
+
+#### Remove ohcv
+```{r}
+model16<-lm(log(price) ~ carwidth + curbweight + enginesize + 
+            stroke + compressionratio + horsepower + citympg + 
+            europe + gas +
+            sedan + convertible +
+            rwd + front +
+            bbl2+bbl4+ spdi+
+            dohc+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model16)
+```
+
+#### Remove bbl4
+```{r}
+model17<-lm(log(price) ~ carwidth + curbweight + enginesize + 
+            stroke + compressionratio + horsepower + citympg + 
+            europe + gas +
+            sedan + convertible +
+            rwd + front +
+            bbl2+ spdi+
+            dohc+ohc+rotor+ohcf+
+            small + middle, data= train)
+summary(model17)
+```
+
+#### Remove middle
+```{r}
+model18<-lm(log(price) ~ carwidth + curbweight + enginesize + 
+            stroke + compressionratio + horsepower + citympg + 
+            europe + gas +
+            sedan + convertible +
+            rwd + front +
+            bbl2+ spdi+
+            dohc+ohc+rotor+ohcf+
+            small, data= train)
+summary(model18)
+```
+
+#### Remove ohcf
+```{r}
+model19<-lm(log(price) ~ carwidth + curbweight + enginesize + 
+            stroke + compressionratio + horsepower + citympg + 
+            europe + gas +
+            sedan + convertible +
+            rwd + front +
+            bbl2+ spdi+
+            dohc+ohc+rotor+
+            small, data= train)
+summary(model19)
+```
+
+#### Remove citympg
+```{r}
+model20<-lm(log(price) ~ carwidth + curbweight + enginesize + 
+            stroke + compressionratio + horsepower + 
+            europe + gas +
+            sedan + convertible +
+            rwd + front +
+            bbl2+ spdi+
+            dohc+ohc+rotor+
+            small, data= train)
+summary(model20)
+```
+
+#### Remove spdi
+```{r}
+model21<-lm(log(price) ~ carwidth + curbweight + enginesize + 
+            stroke + compressionratio + horsepower + 
+            europe + gas +
+            sedan + convertible +
+            rwd + front +
+            bbl2+
+            dohc+ohc+rotor+
+            small, data= train)
+summary(model21)
+```
+
+### Double Check Feature Selection By Using olsrr Package
+```{r}
+BWDfit<-ols_step_backward_p(model1)
+BWDfit
+```
+```{r}
+summary(model1)
+```
+
+### Assumption
+The residuals vs fitted scatter plot shows that the points are not randomly permeate on the graph. 
+This indicates that there are some other patterns we haven't captured.
+Also heteroskedasticity What is heteroskedasticity. This means that the least-squared estimators are no longer BLUE.
+There are other estimators which are linear and unbiased which more frequently than least-squared will get closer to the true population parameters. 
+```{r}
+plot(model21)
+```
+
+
+### F-Test check ANOVA Table
+Ho: All unselected numerical variables = 0 VS Ha: Not Ho
+The result shows we fail to reject Ho. That indicates that the 7 unselected numerical can be reduced.
+```{r}
+anova(model1, model21)
+
+n = 178
+p = 37
+k = 18
+
+ssefm = exp(2.7641)
+sserm = exp(2.9654)
+
+nume = (sserm-ssefm)/(p+1-k)
+den = ssefm/(n-p-1)
+
+f = nume / den
+f_alpha = 2.10
+
+f > f_alpha
+```
+
+
+
+### Breusch Pagan Test
+```{r}
+ols_test_breusch_pagan(model21)
+```
+
+### Collinearity Diagnostics
+```{r}
+ols_coll_diag(model21)
+```
+
+### Remove VIF Higher than 10?
+#### Remove gas
+```{r}
+model22<-lm(log(price) ~ carwidth + curbweight + enginesize + 
+            stroke + compressionratio + horsepower + 
+            europe +
+            sedan + convertible +
+            rwd + front +
+            bbl2+
+            dohc+ohc+rotor+
+            small, data= train)
+ols_coll_diag(model22)
+summary(model22)
+```
+
+#### Remove compressionratio
+```{r}
+model23<-lm(log(price) ~ carwidth + curbweight + enginesize + 
+            stroke + horsepower + 
+            europe +
+            sedan + convertible +
+            rwd + front +
+            bbl2+
+            dohc+ohc+rotor+
+            small, data= train)
+ols_coll_diag(model23)
+summary(model23)
+```
+
+#### Remove dohc
+```{r}
+model24<-lm(log(price) ~ carwidth + curbweight + enginesize + 
+            stroke + horsepower + 
+            europe +
+            sedan + convertible +
+            rwd + front +
+            bbl2+
+            ohc+rotor+
+            small, data= train)
+ols_coll_diag(model24)
+summary(model24)
+```
+
+#### Remove enginesize
+```{r}
+model25<-lm(log(price) ~ carwidth + curbweight + 
+            stroke + horsepower + 
+            europe +
+            sedan + convertible +
+            rwd + front +
+            bbl2+
+            ohc+rotor+
+            small, data= train)
+ols_coll_diag(model25)
+summary(model25)
+```
+
+#### Remove europe
+```{r}
+model26<-lm(log(price) ~ carwidth + curbweight + 
+            stroke + horsepower + 
+            sedan + convertible +
+            rwd + front +
+            bbl2+
+            ohc+rotor+
+            small, data= train)
+ols_coll_diag(model26)
+summary(model26)
+plot(model26)
+```
+
+
+```{r}
+ols_coll_diag(model26)
+```
+
+
+```{r}
+plot(model26)
+```
+
+
+```{r}
+model26_no_log<-lm(price ~ carwidth + curbweight + 
+            stroke + horsepower + 
+            sedan + convertible +
+            rwd + front +
+            bbl2+
+            ohc+rotor+
+            small, data= train)
+ols_coll_diag(model26_no_log)
+summary(model26_no_log)
+plot(model26_no_log)
+```
+
+```{r}
+train
+```
+
+### Prediction Interval
+We are 95% confident that the price for the car with the information above will have a price between 17377.82 and 19009.76.
+
+### Test Model 26
+```{r}
+p <- predict(model26, test)
+
+t = exp(predict(model26, test, interval = "prediction"))
+t
+
+test["model26_pred"] =round(exp(p),0)
+test["model26_pred_lwr"] = t[,2]
+test["model26_pred_upr"] = t[,3]
+
+test[,c('model26_pred', "price","model26_pred_lwr", "model26_pred_upr")]
+
+plot(test$predicted_model_26, test$price)
+```
+
+
+
+
+
+
+
+# Other Attemptions
+#### Solution1: Remove Outlier
+```{r}
+cooksd <- cooks.distance(num_fit)
+
+plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+abline(h = 4*mean(cooksd, na.rm=T), col="red")  # add cutoff line
+text(x=1:length(cooksd)+1, y=cooksd, labels=ifelse(cooksd>4*mean(cooksd, na.rm=T),names(cooksd),""), col="red") 
+```
+```{r}
+influential <- as.numeric(names(cooksd)[(cooksd > 4*mean(cooksd, na.rm=T))])  # influential row numbers
+head(num_df[influential, ])
+```
+
+
+```{r}
+new_df = subset(num_df, select = c(curbweight, enginesize, stroke, compressionratio, horsepower, peakrpm, price))
+df_remove_outlier <- new_df[-influential, ]
+```
+
+#### Model Removed Outliers
+Decreased Residual standard error from 3237 to 2769
+Decreased R^2 from 0.8407 to 0.8345
+```{r}
+lm_no_outlier=lm(price~curbweight+enginesize+stroke+compressionratio+horsepower+peakrpm,data=df_remove_outlier) 
+summary(lm_no_outlier)
+plot(lm_no_outlier)
+```
+
+#### Correlation 
+```{r}
+# improved correlation matrix
+library(corrplot)
+
+corrplot(cor(df_remove_outlier),
+  method = "number",
+  type = "upper" # show only upper side
+)
+```
+
+
+#### Solution2: Log Transformation
+Log(y) the model
+```{r}
+num_fit_log_with_outlier =lm(log(price) ~.,data=new_df)
+summary(num_fit_log_with_outlier)
+plot(num_fit_log_with_outlier)
+```
+
+Log(y) with the model that removed outliers.
+```{r}
+num_fit_log=lm(log(price)~curbweight+enginesize+stroke+compressionratio+horsepower+peakrpm,data=df_remove_outlier)
+summary(num_fit_log)
+plot(num_fit_log)
+```
+
+
+```{r}
+sqrt(mean(resid(rm) ^ 2))
+sqrt(mean(resid(num_fit_log_with_outlier) ^ 2))
+sqrt(mean(resid(num_fit_log) ^ 2))
+```
+
+```{r}
+sqrt(mean((num_df$price - fitted(rm)) ^ 2))
+sqrt(mean((new_df$price - exp(fitted(num_fit_log_with_outlier))) ^ 2))
+sqrt(mean((df_remove_outlier$price - exp(fitted(num_fit_log))) ^ 2))
+```
+
+#### Box-Cox Transformation
+
+```{r}
+boxcox(num_fit_log)
+boxcox(num_fit_log, plotit = TRUE, lambda = seq(0.5, 1.5, by = 0.1))
+
+plot(fitted(num_fit_log), resid(num_fit_log), col = "dodgerblue",
+     pch = 20, cex = 1.5, xlab = "Fitted", ylab = "Residuals")
+abline(h = 0, lty = 2, col = "darkorange", lwd = 2)
+```
+
+### Check Multicollinearity By Using Variance Inflation Factor (VIF)
+After backward selection, we still need to check Multicollinearity and other assumptions. 
+```{r}
+library(carData)
+#calculate the VIF for each predictor variable in the model
+vif(num_fit_log)
+```
+
+```{r}
+round(cor(df_remove_outlier), 2)
+```
+
+### t-test to remove enginesize
+Ho: enginesize = 0 VS Ha: Not Ho
+The result shows that we fails to reject the hypothesis which means enginesize can be removed.
+```{r}
+p_value = 0.09452
+p_value_alpha = 0.05
+
+t_ful = 1.680
+t_split = 2.596
+
+critical_value = 1.98
+
+t_ful > critical_value
+```
+
+### Remove enginesize, peakrpm, and stroke due to Multicollinearity
+```{r}
+num_fit_log_rm_engsize=lm(log(price)~curbweight+stroke+compressionratio+horsepower+peakrpm,data=df_remove_outlier)
+summary(num_fit_log_rm_engsize)
+plot(num_fit_log)
+```
+#### Romove stroke
+```{r}
+temp=lm(log(price)~curbweight+compressionratio+horsepower+peakrpm,data=df_remove_outlier)
+summary(temp)
+plot(temp)
+```
+```{r}
+temp=lm(log(price)~curbweight+compressionratio+horsepower,data=df_remove_outlier)
+summary(temp)
+plot(temp)
+```
+
+
+
+### Prediction Interval
+```{r}
+test[1,]
+```
+We are 95% confident that the price for the car with the information above will have a price between 17377.82 and 19009.76.
+```{r}
+conf = predict(temp, test[1,], interval="confidence")
+exp(conf)
+
+conf = predict(num_fit_log, test[1,], interval="confidence")
+exp(conf)
+```
+
+
+### Test the model
+Until this step I reliaze that I did not split the dataset to train and test dataset.
+```{r}
+p <- predict(temp, test)
+test["num_predicted"] =round(exp(p),0)
+test[,(ncol(test)-1):ncol(test)]
+
+
+p <- predict(num_fit_log, test)
+test["num_predicted"] =round(exp(p),0)
+test[,(ncol(test)-1):ncol(test)]
+```
+
+```{r}
+plot(round(test$num_predicted,0), test$price)
+```
+
+
+
+
+
+
+
+
+
+
+# Categorical Features
+```{r}
+cat_df <- read.csv(file = '/Users/chrisguan/Documents/Regression/final_project/Car_only/Car_only.csv')
+cat_df = subset(cat_df, select = -c(X,doornumber, carbody))
+
+cat_test = cat_df[rownames(test),]
+cat_train = cat_df[rownames(num_df),]
+
+#cat_test_rm_outlier <- cat_test[-influential, ]
+cat_train_rm_outlier <- cat_train[-influential, ]
+```
+
+
+
+```{r}
+test_merge <- merge(cat_test[-9], test,
+                          by = 'row.names', all = TRUE)
+test_merge = test_merge[-1]
+test_merge
+```
+
+
+### Forwared Selection Manually
+#### Indicator of carname
+
+```{r}
+df_remove_outlier
+```
+
+```{r}
+carname_df =  subset(df_remove_outlier)
+carname_df['car_region'] <- subset(cat_train, select = c(CarName))
+
+amer=ifelse(carname_df$car_region=="america",1,0)
+erp=ifelse(carname_df$car_region=="europe",1,0)
+asia=ifelse(carname_df$car_region=="asian",1,0)
+
+region_lm=lm(log(price) ~ curbweight + enginesize + stroke + compressionratio + horsepower  + peakrpm + amer + erp + asia,data=carname_df)
+summary(region_lm)
+plot(region_lm)
+```
+
+```{r}
+c <- lm(log(price) ~ curbweight + compressionratio + horsepower + car_region , data=carname_df)
+plot(c)
+summary(c)
+vif(c)
+```
+
+
+
+#### indicator of enginelocation
+```{r}
+eng_loc_df =  subset(df_remove_outlier)
+eng_loc_df['enginelocation'] <- subset(cat_train_rm_outlier, select = c(enginelocation))
+
+f=ifelse(eng_loc_df$enginelocation=="front",1,0)
+b=ifelse(eng_loc_df$enginelocation=="rear",1,0)
+
+eng_lm=lm(log(price)~curbweight + enginesize + stroke + compressionratio + horsepower  + peakrpm+f+b,data=eng_loc_df)
+summary(eng_lm)
+plot(eng_lm)
+```
+
+
+#### indicator of drivewheel
+```{r}
+wheel_df =  subset(df_remove_outlier)
+wheel_df['drivewheel'] <- subset(cat_train_rm_outlier, select = c(drivewheel))
+
+rwd=ifelse(wheel_df$drivewheel=="rwd",1,0)
+four_wd=ifelse(wheel_df$drivewheel=="4wd",1,0)
+fwd=ifelse(wheel_df$drivewheel=="fwd",1,0)
+
+
+wheel_lm=lm(log(price)~curbweight + enginesize + stroke + compressionratio + horsepower  + peakrpm+rwd+four_wd+fwd,data=wheel_df)
+summary(wheel_lm)
+plot(wheel_lm)
+```
+
+
+#### indicator of aspiration
+```{r}
+asp_df =  subset(df_remove_outlier)
+asp_df['aspiration'] <- subset(cat_train_rm_outlier, select = c(aspiration))
+
+std=ifelse(asp_df$aspiration=="std",1,0)
+turbo=ifelse(asp_df$aspiration=="turbo",1,0)
+
+asp_lm=lm(log(price)~curbweight + enginesize + stroke + compressionratio + horsepower  + peakrpm+std+turbo,data=asp_df)
+summary(asp_lm)
+plot(asp_lm)
+```
+
+
+#### indicator of fueltype
+```{r}
+gas_df =  subset(df_remove_outlier)
+gas_df['fueltype'] <- subset(cat_train_rm_outlier, select = c(fueltype))
+
+gas=ifelse(gas_df$fueltype=="gas",1,0)
+diesel=ifelse(gas_df$fueltype=="diesel",1,0)
+
+gas_lm=lm(log(price)~curbweight + enginesize + stroke + compressionratio + horsepower  + peakrpm+gas+diesel,data=fueltype_df)
+summary(gas_lm)
+plot(gas_lm)
+```
+
+
+#### indicator of cylindernumber
+```{r}
+cyl_df =  subset(df_remove_outlier)
+cyl_df['cylindernumber'] <- subset(cat_train_rm_outlier, select = c(cylindernumber))
+
+small=ifelse(cyl_df$cylindernumber=="small",1,0)
+middle=ifelse(cyl_df$cylindernumber=="middle",1,0)
+large=ifelse(cyl_df$cylindernumber=="large",1,0)
+
+cyl_lm=lm(log(price)~curbweight + enginesize + stroke + compressionratio + horsepower  + peakrpm+small+middle+large,data=cyl_df)
+plot(cyl_lm)
+summary(cyl_lm)
+```
+
+#### indicator of fuelsystem
+```{r}
+sys_df =  subset(df_remove_outlier)
+sys_df['fuelsystem'] <- subset(cat_train_rm_outlier, select = c(fuelsystem))
+
+mpfi=ifelse(sys_df$fuelsystem=="mpfi",1,0)
+bbl2=ifelse(sys_df$fuelsystem=="bbl",1,0)
+mfi=ifelse(sys_df$fuelsystem=="mfi",1,0)
+bbl1=ifelse(sys_df$fuelsystem=="1bbl",1,0)
+bbl4=ifelse(sys_df$fuelsystem=="4bbl",1,0)
+idi=ifelse(sys_df$fuelsystem=="idi",1,0)
+spdi=ifelse(sys_df$fuelsystem=="spdi",1,0)
+
+sys_lm=lm(log(price)~curbweight + enginesize + stroke + compressionratio + horsepower  + peakrpm+mpfi+bbl2+mfi+bbl1+bbl4+idi+spdi,data=sys_df)
+plot(sys_lm)
+summary(sys_lm)
+```
+fuelsystem increased the r^2 the most, so we add cat fuelsystem to the nume dataset, and then remove p value greater than 0.05
+```{r}
+sys_lm=lm(log(price)~curbweight + enginesize + stroke + horsepower + peakrpm + mpfi + idi,data=sys_df)
+plot(sys_lm)
+summary(sys_lm)
+```
+```{r}
+plot(sys_lm)
+```
+
+
+
+```{r}
+catd = cat_train[,-9]
+data_frame <- merge(num_df, catd,
+                          by = 'row.names', all = TRUE)
+data_frame = data_frame[,-1]
+data_frame
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Forward Selection Package
+```{r}
+data_frame
+```
+
+Forward Selection based on p-value
+```{r}
+library(olsrr)
+model<-lm(price ~.,data=data_frame)
+
+FWDfit.p<-ols_step_forward_p(model,penter=.005)
+FWDfit.p
+```
+```{r}
+c <- lm(log(price) ~ enginesize + CarName  + cylindernumber + drivewheel + enginelocation + curbweight, data=data_frame)
+plot(c)
+summary(c)
+```
+
+#### Forward Selection Based on AIC
+```{r}
+model<-lm(price ~.,data=data_frame)
+FWDfit.aic<-ols_step_forward_aic(model)
+
+#This gives you the short summary of the models at each step
+FWDfit.aic
+```
+
+```{r}
+#if you want the intermediate steps, add set 'details' argument = TRUE
+FWDfit.aic<-ols_step_forward_aic(model,details=TRUE)
+FWDfit.aic
+```
+
+
+
+
+### The Best Outcome From Forward Selection
+```{r}
+best_forw <- lm(log(price) ~ enginesize + enginetype + CarName  + cylindernumber + drivewheel + enginelocation + curbweight + stroke + aspiration + 
+          peakrpm + highwaympg + carheight,  data=data_frame)
+
+summary(best_forw)
+```
+
+```{r}
+plot(best_forw)
+```
+
+
+```{r}
+p <- predict(best_forw, test_merge)
+test_merge["foward_predicted"] =round(exp(p),0)
+test_merge[,(ncol(test_merge)-1):ncol(test_merge)]
+```
+
+### Backward
+```{r}
+library(olsrr)
+model<-lm(log(price)~.,data=data_frame)
+BWDfit.aic<-ols_step_backward_aic(model)
+BWDfit.aic
+
+```
+```{r}
+c <- lm(log(price) ~ fuelsystem + carlength + carheight + enginesize + aspiration + wheelbase + peakrpm + highwaympg + citympg, data=data_frame)
+plot(c)
+summary(c)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Conclusion
+After repeating the manual forward selection and auto forward selection ther are two possible outcomes. 
+
+First, the two model eventually are very similar. Becasue they are using exactly same principle. Then we use this model as the best model and complete the project.
+
+The second possible result is I decided to change the threshold of p-value for the auto farward selection and keep more variables. In this case, I can keep two models. One is the model with a strict p-value requirment, but the predict maybe not that accurate comparing with the model that has more complicated variables but not have a strict p-value requirement. One model is for everyday people and the another is for a relatively professional company that has more information about cars.  
